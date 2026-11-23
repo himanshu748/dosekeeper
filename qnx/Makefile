@@ -15,7 +15,7 @@ LDLIBS_gateway := -lsocket
 $(OUT):
 	mkdir -p $@
 
-test:
+test: | $(OUT)
 	gcc -std=gnu11 -Wall -Wextra -Werror -O2 dose.c test/test_dose.c -o $(OUT)/test_dose && $(OUT)/test_dose
 
 clean:
