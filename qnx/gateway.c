@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <sys/time.h>
 #include <sys/utsname.h>
 #include <unistd.h>
 
@@ -187,6 +188,9 @@ int main(int argc, char **argv)
     for (;;) {
         int c = accept(s, NULL, NULL);
         if (c < 0) continue;
+        struct timeval tv = { 2, 0 };
+        setsockopt(c, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof tv);
+        setsockopt(c, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof tv);
         handle(c);
         close(c);
     }
