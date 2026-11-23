@@ -113,6 +113,7 @@ static const char *query(const char *q, const char *key, char *out, size_t n)
             for (p += kl + 1; *p && *p != '&' && i + 1 < n; p++)
                 if ((*p >= '0' && *p <= '9') || *p == '.' || (*p >= 'a' && *p <= 'z')) out[i++] = *p;
                 else return NULL;
+            if (*p && *p != '&') return NULL;
             out[i] = 0;
             return out;
         }
