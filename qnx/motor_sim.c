@@ -34,14 +34,18 @@ int main(void)
         rcvid_t rcvid = MsgReceive(att->chid, &msg, sizeof msg, NULL);
         if (rcvid == -1) continue;
         uint64_t t = now_ns();
-        motor_advance(&m, t - last);
+        uint64_t cutoff = last_cmd + HW_WATCHDOG_NS;
+        if (m.rate_nl_h && t > cutoff) {
+            if (cutoff > last) motor_advance(&m, cutoff - last);
+            m.rate_nl_h = 0;
+            trips++;
+            ev_push(sh, EV_HW_TRIP, (int64_t)(t - last_cmd) / 1000000, 0);
+        } else {
+            motor_advance(&m, t - last);
+        }
         last = t;
         if (rcvid == 0) {
-            if (msg.p.code == PULSE_TICK && m.rate_nl_h && t - last_cmd > HW_WATCHDOG_NS) {
-                m.rate_nl_h = 0;
-                trips++;
-                ev_push(sh, EV_HW_TRIP, (int64_t)(t - last_cmd) / 1000000, 0);
-            } else if (msg.p.code == _PULSE_CODE_DISCONNECT) {
+            if (msg.p.code == _PULSE_CODE_DISCONNECT) {
                 ConnectDetach(msg.p.scoid);
             }
             continue;
