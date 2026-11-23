@@ -21,7 +21,9 @@ http.createServer(async (req, res) => {
     req.pipe(up);
     return;
   }
-  const path = normalize(decodeURIComponent(req.url.split('?')[0])).replace(/^(\.\.[/\\])+/, '');
+  let raw;
+  try { raw = decodeURIComponent(req.url.split('?')[0]); } catch { res.writeHead(400); return res.end(); }
+  const path = normalize(raw).replace(/^(\.\.[/\\])+/, '');
   const file = join(root, path === '/' ? 'index.html' : path);
   if (!file.startsWith(root) || file.endsWith('.mjs')) { res.writeHead(404); return res.end(); }
   try {
