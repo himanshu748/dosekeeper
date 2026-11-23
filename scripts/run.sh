@@ -18,7 +18,7 @@ trap 'kill $QEMU $NODE 2>/dev/null' EXIT
 trap 'exit 143' TERM
 trap 'exit 130' INT
 echo "QNX booting (console: $VM/console.log)"
-until kill -0 $QEMU && curl -sf http://127.0.0.1:8080/api/status >/dev/null; do sleep 1; done
+until curl -sf http://127.0.0.1:8080/api/status >/dev/null; do kill -0 $QEMU || exit 1; sleep 1; done
 echo "QNX gateway up"
 QNX_URL=http://127.0.0.1:8080 node "$ROOT/web/server.mjs" &
 NODE=$!
