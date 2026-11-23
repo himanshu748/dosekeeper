@@ -1,5 +1,7 @@
 # Build with the QNX SDP 8.0 toolchain:  source ~/qnx800/qnxsdp-env.sh && make
-CC      ?= qcc
+ifeq ($(origin CC),default)
+CC      := qcc
+endif
 VARIANT ?= gcc_ntox86_64
 CFLAGS  += -V$(VARIANT) -std=gnu11 -O2 -Wall -Wextra -Werror
 OUT     := build
