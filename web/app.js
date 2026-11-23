@@ -87,6 +87,10 @@ function onEvents(events, nowMs) {
 function setConn(cls, text) { $('conn').className = 'conn ' + cls; $('conn-text').textContent = text; }
 
 function render(s) {
+  if (prevNow !== null && s.now_ms < prevNow) {           /* target rebooted: its clock and event ids restart */
+    lastEventId = 0; startId = 0; session = null; prevNow = null;
+    $('events').replaceChildren();
+  }
   const p = s.pump;
   setConn('up', `${s.os.sysname} ${s.os.release} · ${s.os.machine} · ${s.os.cpus} CPU`);
   $('h-os').textContent = `${s.os.sysname} ${s.os.release}`;
