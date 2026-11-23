@@ -1,5 +1,8 @@
 /* tally: the smallest useful QNX resource manager.
  *   echo 5 > /dev/tally ; echo 7 > /dev/tally ; cat /dev/tally   ->  total 12 (2 writes) */
+struct _iofunc_ocb;
+#define RESMGR_OCB_T struct _iofunc_ocb
+#define IOFUNC_OCB_T struct _iofunc_ocb
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>

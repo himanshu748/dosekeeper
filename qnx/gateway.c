@@ -160,7 +160,7 @@ static void handle(int fd)
         snprintf(cmd, sizeof cmd, "start %s %s\n", a, b2);
         result(fd, pump_write(cmd));
     } else if (post && (!strcmp(target, "/api/pause") || !strcmp(target, "/api/resume") || !strcmp(target, "/api/stop"))) {
-        snprintf(cmd, sizeof cmd, "%s\n", target + 5);
+        snprintf(cmd, sizeof cmd, "%.15s\n", target + 5);
         result(fd, pump_write(cmd));
     } else if (post && !strcmp(target, "/api/fault/kill")) {
         result(fd, fault(SIGKILL, EV_FAULT_KILL));

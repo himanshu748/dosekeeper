@@ -5,6 +5,9 @@
  * The delivered volume is never kept in this process: it is read back from the motor
  * encoder, and the prescription is checkpointed in shared memory, so a restarted
  * controller resumes the same dose without losing or repeating a drop. */
+struct _iofunc_ocb;
+#define RESMGR_OCB_T struct _iofunc_ocb
+#define IOFUNC_OCB_T struct _iofunc_ocb
 #include "common.h"
 #include <errno.h>
 #include <pthread.h>
