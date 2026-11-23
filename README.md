@@ -23,7 +23,7 @@ Five processes, each in its own address space:
 |---|---|---|---|
 | `motor_sim` | Simulated pump hardware: integrates volume in nanolitres, hard position interlock, 100 ms hardware watchdog | FIFO 62 | `name_attach()`, `MsgReceive()`/`MsgReply()`, timer pulses |
 | `pumpd` | Dose controller: 100 Hz control thread + `/dev/pump` resource manager | FIFO 50 / 20 | `resmgr_attach()`, `iofunc_*`, `MsgSend()`, `MsgSendPulse()` heartbeat, priority-inheriting mutex |
-| `guardian` | Watchdog: spawns, reaps and respawns `pumpd`; kills it if heartbeats stop | FIFO 55 | `posix_spawn()`, `waitpid()`, pulses, `TimerTimeout`-free tick pulse |
+| `guardian` | Watchdog: spawns, reaps and respawns `pumpd`; kills it if heartbeats stop | FIFO 55 | `posix_spawn()`, `waitpid()`, heartbeat and timer pulses |
 | `loadgen` | CPU hog, rogue or budgeted | FIFO 60 or SPORADIC 60→8 | `SCHED_SPORADIC` budgets |
 | `gateway` | HTTP/JSON API for the dashboard; talks to the controller only through `/dev/pump` | FIFO 10 | POSIX sockets, signals for fault injection |
 
