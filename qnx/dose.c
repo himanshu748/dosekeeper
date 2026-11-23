@@ -25,7 +25,7 @@ int motor_advance(struct motor *m, uint64_t dt_ns)
     return 0;
 }
 
-/* Parses a decimal with at most one fractional digit into tenths. */
+/* Parses a decimal with at most one significant fractional digit into tenths. */
 static int parse_tenths(const char **p, uint32_t max, uint32_t *out)
 {
     const char *s = *p;
@@ -37,6 +37,7 @@ static int parse_tenths(const char **p, uint32_t max, uint32_t *out)
         s++;
         if (!isdigit((unsigned char)*s)) return -1;
         v += (uint64_t)(*s++ - '0');
+        while (*s == '0') s++;
         if (isdigit((unsigned char)*s)) return -1;
     }
     if (v == 0 || v > max) return -1;

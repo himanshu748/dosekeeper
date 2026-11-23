@@ -10,6 +10,8 @@ int main(void)
     struct cmd c;
     assert(ok("start 120 5\n", &c) && c.kind == CMD_START && c.rate_x10 == 1200 && c.vtbi_x10 == 50);
     assert(ok("start 0.5 0.1", &c) && c.rate_x10 == 5 && c.vtbi_x10 == 1);
+    assert(ok("start 360.00 6.50", &c) && c.rate_x10 == 3600 && c.vtbi_x10 == 65);
+    assert(!ok("start 360.05 6", &c));
     assert(ok("pause", &c) && c.kind == CMD_PAUSE);
     assert(!ok("start 1000 5", &c));      /* above 999.9 mL/h */
     assert(!ok("start 10 1001", &c));     /* above 1000 mL */
