@@ -146,7 +146,7 @@ static int apply(const struct cmd *c)
     switch (c->kind) {
     case CMD_START:
         if (rx.state == ST_RUNNING || rx.state == ST_PAUSED) { err = EBUSY; break; }
-        if (!st.motor_ok) { err = EAGAIN; break; }
+        if (!st.motor_ok || st.motor_rate) { err = EAGAIN; break; }
         rx.rate_x10 = c->rate_x10;
         rx.vtbi_nl = (uint64_t)c->vtbi_x10 * (NL_PER_ML / 10);
         rx.start_pos_nl = st.pos;
