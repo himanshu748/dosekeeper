@@ -78,8 +78,8 @@ int main(int argc, char **argv)
         rcvid_t rcvid = MsgReceive(att->chid, &msg, sizeof msg, NULL);
         if (rcvid == -1) continue;
         if (rcvid > 0) { MsgReply(rcvid, msg.type == _IO_CONNECT ? EOK : ENOSYS, NULL, 0); continue; }
-        uint64_t t = now_ns();
         pthread_mutex_lock(&mu);
+        uint64_t t = now_ns();
         if (msg.p.code == PULSE_HB) {
             last_hb = t;
         } else if (msg.p.code == PULSE_TICK) {
