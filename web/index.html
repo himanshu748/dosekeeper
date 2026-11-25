@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DoseKeeper — the dose survives the crash</title>
+<meta name="description" content="A fault-tolerant infusion pump safety core on QNX 8.0: resource-manager dose controller, watchdog restart, CPU budgets and live fault injection.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<header class="nav">
+  <a class="brand" href="#top"><span class="drop"></span>DoseKeeper</a>
+  <nav><a href="#how">How it works</a><a href="#console">Live console</a><a href="#arch">Architecture</a>
+  <a class="gh" href="https://github.com/himanshu748/dosekeeper" target="_blank" rel="noopener">GitHub</a></nav>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow reveal">QNX 8.0 · Robotics &amp; Medical</p>
+      <h1 class="reveal">Kill the controller.<br><em>The dose survives.</em></h1>
+      <p class="lede reveal">DoseKeeper is an infusion pump safety core running on the QNX Neutrino microkernel. Its dose controller is a separate process behind a resource manager, a watchdog brings it back in milliseconds, and CPU budgets keep it on time when other software misbehaves.</p>
+      <div class="cta reveal"><a class="btn primary" href="#console">Open the live console</a><a class="btn ghost" href="#how">See how</a></div>
+      <dl class="hero-stats reveal">
+        <div><dt id="h-rec">—</dt><dd>last recovery</dd></div>
+        <div><dt id="h-err">0 nL</dt><dd>dose error</dd></div>
+        <div><dt id="h-os">QNX</dt><dd>live target</dd></div>
+      </dl>
+    </div>
+    <div class="hero-art reveal" aria-hidden="true">
+      <svg viewBox="0 0 320 320" class="ring">
+        <defs><linearGradient id="g1" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#5eead4"/><stop offset="1" stop-color="#60a5fa"/></linearGradient></defs>
+        <circle cx="160" cy="160" r="130" class="track"/>
+        <circle cx="160" cy="160" r="130" class="arc" id="hero-arc"/>
+        <circle cx="160" cy="160" r="100" class="pulse"/>
+      </svg>
+      <div class="hero-drip"><span></span><span></span><span></span></div>
+    </div>
+  </section>
+
+  <section id="how" class="how">
+    <h2 class="reveal">Three things that keep a patient safe when software fails</h2>
+    <div class="cards">
+      <article class="card reveal"><span class="num">01</span><h3>The dose lives in hardware, not RAM</h3><p>Delivered volume is read back from the motor encoder and the prescription is checkpointed in CRC-protected shared memory. A restarted controller resumes the same infusion without losing or repeating a single nanolitre, and the motor refuses to move past the prescribed volume.</p></article>
+      <article class="card reveal"><span class="num">02</span><h3>A watchdog that notices in milliseconds</h3><p>The guardian process spawns the controller, respawns it the instant it dies, and kills it if its 100 Hz heartbeat pulses stop for 40 ms. The motor has its own 100 ms hardware watchdog as the last line of defence.</p></article>
+      <article class="card reveal"><span class="num">03</span><h3>CPU budgets the scheduler enforces</h3><p>Background work runs under QNX sporadic scheduling: 2 ms of high priority per 10 ms, then it drops below the controller. Turn that off and the rogue load starves the controller — you can watch both on the live console.</p></article>
+    </div>
+  </section>
+
+  <section id="console" class="console">
+    <div class="console-head">
+      <h2>Live console</h2>
+      <div class="conn" id="conn"><span class="dot"></span><span id="conn-text">Connecting to QNX…</span></div>
+    </div>
+
+    <div class="grid">
+      <div class="panel rx">
+        <h3>Prescription</h3>
+        <form id="rx-form" autocomplete="off">
+          <label>Rate <span class="unit">mL/h</span><input id="rate" type="number" step="any" value="360" required></label>
+          <label>Volume to infuse <span class="unit">mL</span><input id="vtbi" type="number" step="any" value="6" required></label>
+          <div class="row">
+            <button class="btn primary" id="b-start" type="submit">Start infusion</button>
+            <button class="btn" id="b-pause" type="button" data-api="pause">Pause</button>
+            <button class="btn" id="b-resume" type="button" data-api="resume">Resume</button>
+            <button class="btn" id="b-stop" type="button" data-api="stop">Stop</button>
+          </div>
+        </form>
+        <p class="hint">Commands are written to <code>/dev/pump</code>, the controller's resource manager. Invalid prescriptions are rejected there, not in the browser.</p>
+      </div>
+
+      <div class="panel gauge">
+        <svg viewBox="0 0 220 220" class="dial">
+          <circle cx="110" cy="110" r="92" class="track"/>
+          <circle cx="110" cy="110" r="92" class="ideal" id="dial-ideal"/>
+          <circle cx="110" cy="110" r="92" class="arc" id="dial-arc"/>
+        </svg>
+        <div class="dial-center">
+          <div class="state" id="state">—</div>
+          <div class="vol"><span id="delivered">0.000</span><small> / <span id="vtbi-show">0.0</span> mL</small></div>
+          <div class="sub" id="rate-show">motor 0.0 mL/h</div>
+        </div>
+      </div>
+
+      <div class="panel faults">
+        <h3>Fault injection</h3>
+        <button class="fault danger" data-api="fault/kill"><b>Kill controller</b><span>SIGKILL pumpd mid-dose</span></button>
+        <button class="fault warn" data-api="fault/hang"><b>Freeze controller</b><span>SIGSTOP: alive but silent</span></button>
+        <button class="fault rogue" data-api="load?mode=rogue"><b>Rogue CPU load</b><span>3 s, FIFO above the controller</span></button>
+        <button class="fault ok" data-api="load?mode=budgeted"><b>Budgeted CPU load</b><span>15 s, sporadic 2 ms / 10 ms</span></button>
+        <div class="loadbar" id="loadbar"><span id="loadbar-fill"></span><em id="loadbar-text">No load</em></div>
+      </div>
+
+      <div class="panel integrity">
+        <h3>Dose integrity</h3>
+        <ul>
+          <li><span>Overdose</span><b id="i-over">0 nL</b></li>
+          <li><span>Rate above prescription</span><b id="i-bolus">never</b></li>
+          <li><span>Volume went backwards</span><b id="i-back">never</b></li>
+          <li><span>Behind schedule</span><b id="i-drift">0.00 s</b></li>
+          <li><span>Final vs prescribed</span><b id="i-final">—</b></li>
+        </ul>
+      </div>
+
+      <div class="panel metrics">
+        <div class="metric big"><span>Last recovery</span><b id="m-rec">—</b><small id="m-recmax">max —</small></div>
+        <div class="metric"><span>Restarts</span><b id="m-restarts">0</b></div>
+        <div class="metric"><span>Controller PID</span><b id="m-pid">—</b><small id="m-gen">gen —</small></div>
+        <div class="metric"><span>Tick jitter (1 s)</span><b id="m-jit">—</b><small>period 10 ms</small></div>
+        <div class="metric"><span>Deadline misses</span><b id="m-miss">0</b></div>
+        <div class="metric"><span>HW watchdog trips</span><b id="m-trips">0</b></div>
+      </div>
+
+      <div class="panel chart">
+        <div class="chart-head"><h3>Delivered volume</h3><div class="legend"><i class="l-act"></i>encoder<i class="l-ideal"></i>ideal<i class="l-fault"></i>fault</div></div>
+        <canvas id="chart" height="220"></canvas>
+      </div>
+
+      <div class="panel events">
+        <h3>Event log <small>from QNX shared memory</small></h3>
+        <ol id="events"></ol>
+      </div>
+    </div>
+  </section>
+
+  <section id="arch" class="arch">
+    <h2 class="reveal">Five processes, one microkernel</h2>
+    <p class="lede reveal">Every box is a separate QNX process with its own address space. They talk only through native message passing, pulses and one shared checkpoint.</p>
+    <svg viewBox="0 0 900 360" class="arch-svg reveal" role="img" aria-label="Architecture diagram">
+      <g class="link"><path d="M200 90 H340"/><path d="M560 90 H700"/><path d="M450 130 V220"/><path d="M200 270 H340"/><path d="M560 270 H700"/></g>
+      <g class="node" id="n-gateway"><rect x="40" y="50" width="160" height="80" rx="14"/><text x="120" y="85">gateway</text><text x="120" y="108" class="s">HTTP · prio 10</text></g>
+      <g class="node core" id="n-pumpd"><rect x="340" y="40" width="220" height="100" rx="16"/><text x="450" y="80">pumpd</text><text x="450" y="104" class="s">/dev/pump resmgr · control prio 50</text></g>
+      <g class="node" id="n-motor"><rect x="700" y="50" width="160" height="80" rx="14"/><text x="120" y="85" transform="translate(660 0)">motor_sim</text><text x="120" y="108" class="s" transform="translate(660 0)">encoder · interlock · prio 62</text></g>
+      <g class="node" id="n-guardian"><rect x="340" y="220" width="220" height="100" rx="16"/><text x="450" y="262">guardian</text><text x="450" y="286" class="s">spawn · heartbeat · prio 55</text></g>
+      <g class="node" id="n-shm"><rect x="40" y="230" width="160" height="80" rx="14"/><text x="120" y="265">checkpoint</text><text x="120" y="288" class="s">shm · CRC · double buffer</text></g>
+      <g class="node" id="n-load"><rect x="700" y="230" width="160" height="80" rx="14"/><text x="780" y="265">loadgen</text><text x="780" y="288" class="s">FIFO 60 or sporadic</text></g>
+      <g class="lbl"><text x="270" y="80">open/read/write</text><text x="630" y="80">MsgSend 100 Hz</text><text x="470" y="180" text-anchor="start">heartbeat pulse</text><text x="270" y="262">death time</text><text x="630" y="262">competes for CPU</text></g>
+    </svg>
+  </section>
+</main>
+
+<footer><span>DoseKeeper · MIT licensed · a simulation for the QNX Global Hackathon, not a medical device.</span><a href="https://github.com/himanshu748/dosekeeper">Source</a></footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
+</body>
+</html>
