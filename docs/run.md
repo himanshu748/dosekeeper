@@ -27,7 +27,13 @@ This compiles the five processes with `qcc -Vgcc_ntox86_64`, adds them to `/syst
 scripts/run.sh
 ```
 
-`run.sh` boots the disk in QEMU with user-mode networking (no bridge or root needed), forwards the guest gateway to `127.0.0.1:8080`, waits for `/api/status` to answer from QNX, then serves the dashboard on <http://localhost:3000>. The QNX serial console is written to `~/dosekeeper-vm/console.log`.
+The launcher boots QEMU with user-mode networking and forwards the guest gateway
+to `127.0.0.1:8080`. It serves the dashboard on <http://localhost:3000>
+after `/api/status` reports QNX 8.0, a controller process and a connected
+simulated motor. Startup errors point to the serial log at
+`~/dosekeeper-vm/console.log` (or `$VM_DIR/console.log`). The startup
+timeout is 120 seconds. On a slower host, run
+`QNX_BOOT_TIMEOUT=240 scripts/run.sh`.
 
 ## 4. Drive it from the shell
 
