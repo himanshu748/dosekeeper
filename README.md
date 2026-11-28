@@ -24,7 +24,7 @@ interlock, and checkpoint tests. Those checks also run on GitHub Actions.
 | **Kill controller** (`SIGKILL pumpd`) | `guardian` gets `waitpid()`, respawns `pumpd`; the new process reloads the prescription checkpoint and reads the delivered volume back from the motor encoder | Recovery in milliseconds, 0 nL lost or repeated, motor never stopped |
 | **Freeze controller** (`SIGSTOP pumpd`) | Heartbeat pulses stop; after 40 ms `guardian` kills and respawns it | Hang detected and recovered before the motor's 100 ms hardware watchdog fires |
 | **Rogue CPU load** (FIFO priority 60 on every CPU) | The controller (priority 50) is starved; the motor's hardware watchdog stops the pump | Deadline misses, a watchdog trip, the infusion falling behind — but never an overdose |
-| **Budgeted CPU load** (same load under `SCHED_SPORADIC`, 2 ms / 10 ms) | The scheduler drops the load below the controller once its budget is spent | 100 % CPU busy, zero deadline misses, tick jitter around the budget size |
+| **Budgeted CPU load** (same load under `SCHED_SPORADIC`, 2 ms / 10 ms) | The scheduler drops the load below the controller once its budget is spent | Compare recent tick lateness and additional deadline misses against the rogue window |
 
 ## Architecture
 

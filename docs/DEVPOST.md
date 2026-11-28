@@ -23,7 +23,7 @@ From the web console you can kill the controller (`SIGKILL`), freeze it (`SIGSTO
 - **Kill:** the guardian respawns the controller in milliseconds; the new process reloads the prescription checkpoint and reads delivered volume back from the motor encoder. 0 nL lost or repeated.
 - **Freeze:** heartbeats stop, and the hang is detected and recovered before the motor's hardware watchdog fires.
 - **Rogue load:** the controller is starved, deadlines are missed, the hardware watchdog stops the pump — the infusion falls behind, but never overdoses.
-- **Budgeted load:** the same flood under a sporadic CPU budget: 100% CPU busy, zero deadline misses.
+- **Budgeted load:** the same load generator runs under a sporadic CPU budget. The console shows recent tick lateness, deadline events, and miss counts for the current controller generation.
 
 ## How we built it
 
@@ -31,13 +31,14 @@ QNX 8.0 (QNX Everywhere SDP) on QEMU/KVM. The controller uses `resmgr_attach()` 
 
 ## Evidence it really runs on QNX
 
-Measured on QEMU/KVM with 4 vCPUs (full output in `docs/run.md`):
+Previously documented in the [QEMU/KVM run notes](run.md#measured-on-qemukvm-4-vcpus) for a four-vCPU guest:
 
 - SIGKILL restart: **18 ms**, dose resumed exactly
 - SIGSTOP hang detection+recovery: **63 ms**
+- Rogue load: **12 ms** restart and one simulated motor watchdog trip
 - Infusion completed at exactly **2,000,000 nL** delivered
 
-The recorded run exercises QNX resource managers, `name_attach()`, native QNX IPC, and sporadic scheduling. `web/evidence.html` presents these historical measurements in a read-only page that opens without the target. Portable host tests verify the command parser, simulated encoder, position interlock, and checkpoint logic.
+During the budgeted-load window the notes report about 1 ms of worst lateness per second and one 7 ms late tick when the load process started. The notes also describe idle QEMU scheduling noise. `web/evidence.html` presents the historical measurements as a read-only page. Portable host tests verify the command parser, simulated encoder, position interlock, and checkpoint logic.
 
 ## Challenges we ran into
 
@@ -56,6 +57,8 @@ A real hardware target (GPIO-driven pump on a supported board), dose-rate profil
 ## Built with
 
 `c` `qnx` `qnx-8.0` `rtos` `resource-manager` `watchdog` `qemu` `embedded` `posix` `nodejs`
+
+OpenAI Codex assisted with the reviewer evidence page and documentation checks.
 
 ## Links
 
