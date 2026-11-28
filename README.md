@@ -8,14 +8,21 @@ DoseKeeper is a fault-tolerant infusion pump safety core for **QNX OS 8.0**. The
 
 ## Review the recorded QNX run
 
-The [run notes](docs/run.md#measured-on-qemukvm-4-vcpus) document a QNX 8.0
-QEMU/KVM run with 18 ms restart after controller exit, 63 ms recovery after a
-hang, and a final simulated volume of 2,000,000 nL after three restarts. Open
-`web/evidence.html` from the checkout to see the read-only evidence summary
-without booting the VM. These are historical emulator measurements.
+Open `web/evidence.html` from a checkout to review the documented QNX 8.0
+run offline. The page needs no gateway, credentials or licence. It shows the
+recorded outcome and the timing limits of a four-vCPU QEMU/KVM guest.
+
+The [archived run notes](https://github.com/himanshu748/dosekeeper/blob/6206c753a2411ef1b85695964ac710c2a8596dac/docs/run.md#measured-on-qemukvm-4-vcpus)
+record 18 ms after controller exit, 63 ms after a hang, and a final
+simulated volume of 2,000,000 nL after three restarts. The notes are a written
+record of that run. Fresh target footage and raw capture files remain pending.
 
 On a host with GCC, `make -C qnx test` runs the portable parser, encoder,
-interlock, and checkpoint tests. Those checks also run on GitHub Actions.
+interlock and checkpoint tests. GitHub Actions runs the same host suite.
+For a native recording, use the [QNX setup](docs/run.md) and
+[one-take shotlist](VIDEO_SHOTLIST.md). The
+[Devpost project](https://devpost.com/software/dosekeeper) is a draft awaiting
+a public video and submission.
 
 ## What it shows
 

@@ -64,4 +64,5 @@ OpenAI Codex assisted with the reviewer evidence page and documentation checks.
 
 - Repository: https://github.com/himanshu748/dosekeeper
 - Build/run evidence: https://github.com/himanshu748/dosekeeper/blob/main/docs/run.md
-- Video: `YOUTUBE_URL_HERE` (film per VIDEO_SHOTLIST.md — one take, under 3:00)
+- Devpost project: https://devpost.com/software/dosekeeper (draft)
+- Public video: pending a native recording and public YouTube upload. Use the [one-take shotlist](../VIDEO_SHOTLIST.md) to capture the QNX guest in under three minutes.
