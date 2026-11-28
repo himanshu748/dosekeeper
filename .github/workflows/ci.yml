@@ -10,3 +10,4 @@ jobs:
         with: { node-version: 20 }
       - run: node --check web/server.mjs && node --check web/app.js
       - run: bash -n scripts/build-image.sh && bash -n scripts/run.sh
+      - run: node --test scripts/test-run.mjs
