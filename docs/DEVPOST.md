@@ -37,7 +37,7 @@ Measured on QEMU/KVM with 4 vCPUs (full output in `docs/run.md`):
 - SIGSTOP hang detection+recovery: **63 ms**
 - Infusion completed at exactly **2,000,000 nL** delivered
 
-QNX-specific surface throughout: resource manager, name_attach, native QNX IPC, sporadic scheduling — none of it POSIX-portable filler.
+The recorded run exercises QNX resource managers, `name_attach()`, native QNX IPC, and sporadic scheduling. `web/evidence.html` presents these historical measurements in a read-only page that opens without the target. Portable host tests verify the command parser, simulated encoder, position interlock, and checkpoint logic.
 
 ## Challenges we ran into
 
@@ -47,7 +47,7 @@ QNX-specific surface throughout: resource manager, name_attach, native QNX IPC, 
 
 ## Accomplishments we're proud of
 
-The demo does the thing safety-critical demos usually avoid: it breaks the system live, in the worst ways we could think of, and shows the measured numbers afterwards. The dose is exact every time.
+The recorded simulation finished at its configured volume after three controller restarts. The target console exposes the recovery intervals and motor watchdog events for that workload.
 
 ## What's next for DoseKeeper
 
