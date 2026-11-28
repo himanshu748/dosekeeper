@@ -10,14 +10,14 @@
 <body>
 <header class="nav">
   <a class="brand" href="index.html"><span class="drop" aria-hidden="true"></span>DoseKeeper</a>
-  <nav aria-label="Evidence links"><a class="gh" href="https://github.com/himanshu748/dosekeeper/blob/main/docs/run.md#measured-on-qemukvm-4-vcpus">Run notes</a></nav>
+  <nav aria-label="Evidence links"><a class="gh" href="https://github.com/himanshu748/dosekeeper/blob/6206c753a2411ef1b85695964ac710c2a8596dac/docs/run.md#measured-on-qemukvm-4-vcpus">Archived run notes</a></nav>
 </header>
 <main>
   <section>
     <p class="eyebrow">Recorded QNX 8.0 simulation · QEMU/KVM · 4 vCPUs</p>
     <h1>Controller recovery</h1>
-    <p class="lede">One documented run finished with 2,000,000 nL delivered in the simulation after three restarts. The motor encoder provided the delivered-volume counter after each restart.</p>
-    <div class="cards" aria-label="Recorded recovery times">
+    <p class="lede">One documented 2 mL dose at 360 mL/h finished with 2,000,000 nL delivered in the simulation after three restarts. The motor encoder provided the delivered-volume counter after each restart.</p>
+    <div class="cards" aria-label="Recorded timings and evidence scope">
       <article class="card">
         <h3>Controller exit</h3>
         <p><strong>18 ms</strong> to restart after the controller was killed.</p>
@@ -30,11 +30,22 @@
         <h3>CPU starvation</h3>
         <p><strong>12 ms</strong> to restart. The simulated motor watchdog stopped the pump once.</p>
       </article>
+      <article class="card">
+        <h3>Budgeted load</h3>
+        <p>The 15-second window had about 1 ms of worst lateness per second, with one 7 ms late tick when the load process spawned.</p>
+      </article>
+      <article class="card">
+        <h3>Idle QEMU</h3>
+        <p>The notes record a 5 ms late tick every few seconds even at idle. Timing depends on the host scheduler and guest setup.</p>
+      </article>
+      <article class="card">
+        <h3>Available evidence</h3>
+        <p>This offline page summarizes the written run notes. The native console needs a running QNX guest.</p>
+      </article>
     </div>
-    <p class="lede">These are historical emulator measurements. They describe the documented workload and depend on the host scheduler and QEMU setup.</p>
     <div class="cta">
-      <a class="btn primary" href="https://github.com/himanshu748/dosekeeper/blob/main/docs/run.md">Read the evidence and setup</a>
-      <a class="btn ghost" href="index.html#console">Open the target console</a>
+      <a class="btn primary" href="https://github.com/himanshu748/dosekeeper/blob/6206c753a2411ef1b85695964ac710c2a8596dac/docs/run.md#measured-on-qemukvm-4-vcpus">Read the archived measurements</a>
+      <a class="btn ghost" href="https://github.com/himanshu748/dosekeeper/blob/main/docs/run.md">Set up the native console</a>
     </div>
   </section>
 </main>
