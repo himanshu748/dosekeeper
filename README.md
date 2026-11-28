@@ -6,6 +6,17 @@ DoseKeeper is a fault-tolerant infusion pump safety core for **QNX OS 8.0**. The
 
 > A simulation built for the QNX Global Hackathon (Robotics & Medical). Not a medical device.
 
+## Review the recorded QNX run
+
+The [run notes](docs/run.md#measured-on-qemukvm-4-vcpus) document a QNX 8.0
+QEMU/KVM run with 18 ms restart after controller exit, 63 ms recovery after a
+hang, and a final simulated volume of 2,000,000 nL after three restarts. Open
+`web/evidence.html` from the checkout to see the read-only evidence summary
+without booting the VM. These are historical emulator measurements.
+
+On a host with GCC, `make -C qnx test` runs the portable parser, encoder,
+interlock, and checkpoint tests. Those checks also run on GitHub Actions.
+
 ## What it shows
 
 | You do this in the console | QNX does this | You see |

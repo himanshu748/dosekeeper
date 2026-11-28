@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DoseKeeper QNX run evidence</title>
+<meta name="description" content="Recorded recovery results from the DoseKeeper QNX 8.0 simulation.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="index.html"><span class="drop" aria-hidden="true"></span>DoseKeeper</a>
+  <nav aria-label="Evidence links"><a class="gh" href="https://github.com/himanshu748/dosekeeper/blob/main/docs/run.md#measured-on-qemukvm-4-vcpus">Run notes</a></nav>
+</header>
+<main>
+  <section>
+    <p class="eyebrow">Recorded QNX 8.0 simulation · QEMU/KVM · 4 vCPUs</p>
+    <h1>Controller recovery</h1>
+    <p class="lede">One documented run finished with 2,000,000 nL delivered in the simulation after three restarts. The motor encoder provided the delivered-volume counter after each restart.</p>
+    <div class="cards" aria-label="Recorded recovery times">
+      <article class="card">
+        <h3>Controller exit</h3>
+        <p><strong>18 ms</strong> to restart after the controller was killed.</p>
+      </article>
+      <article class="card">
+        <h3>Controller hang</h3>
+        <p><strong>63 ms</strong> to detect the missed heartbeat and recover.</p>
+      </article>
+      <article class="card">
+        <h3>CPU starvation</h3>
+        <p><strong>12 ms</strong> to restart. The simulated motor watchdog stopped the pump once.</p>
+      </article>
+    </div>
+    <p class="lede">These are historical emulator measurements. They describe the documented workload and depend on the host scheduler and QEMU setup.</p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/himanshu748/dosekeeper/blob/main/docs/run.md">Read the evidence and setup</a>
+      <a class="btn ghost" href="index.html#console">Open the target console</a>
+    </div>
+  </section>
+</main>
+<footer><span>DoseKeeper · QNX Global Hackathon simulation</span><a href="https://github.com/himanshu748/dosekeeper">Source</a></footer>
+</body>
+</html>

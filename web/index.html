@@ -22,12 +22,12 @@
     <div class="hero-copy">
       <p class="eyebrow reveal">QNX 8.0 · Robotics &amp; Medical</p>
       <h1 class="reveal">Kill the controller.<br><em>The dose survives.</em></h1>
-      <p class="lede reveal">DoseKeeper is an infusion pump safety core running on the QNX Neutrino microkernel. Its dose controller is a separate process behind a resource manager, a watchdog brings it back in milliseconds, and CPU budgets keep it on time when other software misbehaves.</p>
-      <div class="cta reveal"><a class="btn primary" href="#console">Open the live console</a><a class="btn ghost" href="#how">See how</a></div>
+      <p class="lede reveal">DoseKeeper simulates an infusion pump on the QNX Neutrino microkernel. A separate watchdog restarts the controller and the motor encoder tracks simulated volume throughout recovery.</p>
+      <div class="cta reveal"><a class="btn primary" href="evidence.html">See recorded QNX results</a><a class="btn ghost" href="#console">Open the target console</a></div>
       <dl class="hero-stats reveal">
         <div><dt id="h-rec">—</dt><dd>last recovery</dd></div>
-        <div><dt id="h-err">0 nL</dt><dd>dose error</dd></div>
-        <div><dt id="h-os">QNX</dt><dd>live target</dd></div>
+        <div><dt id="h-err">Pending</dt><dd>dose error</dd></div>
+        <div><dt id="h-os">Pending</dt><dd>live target</dd></div>
       </dl>
     </div>
     <div class="hero-art reveal" aria-hidden="true">
@@ -42,7 +42,7 @@
   </section>
 
   <section id="how" class="how">
-    <h2 class="reveal">Three things that keep a patient safe when software fails</h2>
+    <h2 class="reveal">How the simulated controller recovers</h2>
     <div class="cards">
       <article class="card reveal"><span class="num">01</span><h3>The dose lives in hardware, not RAM</h3><p>Delivered volume is read back from the motor encoder and the prescription is checkpointed in CRC-protected shared memory. A restarted controller resumes the same infusion without losing or repeating a single nanolitre, and the motor refuses to move past the prescribed volume.</p></article>
       <article class="card reveal"><span class="num">02</span><h3>A watchdog that notices in milliseconds</h3><p>The guardian process spawns the controller, respawns it the instant it dies, and kills it if its 100 Hz heartbeat pulses stop for 40 ms. The motor has its own 100 ms hardware watchdog as the last line of defence.</p></article>

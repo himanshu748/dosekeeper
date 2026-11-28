@@ -1,0 +1,24 @@
+name: Host checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  host-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run portable C tests
+        run: make -C qnx test
+      - name: Check dashboard scripts
+        run: |
+          node --check web/app.js
+          node --check web/server.mjs
